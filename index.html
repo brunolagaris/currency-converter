@@ -4,18 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Currency Converter</title>
-    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="container">
-        <h1>Currency Converter</h1>
-        <div class="converter">
-            <input type="number" name="amount" id="amount" placeholder="Enter amount">
-            <select name="fromCurrency" id="fromCurrency"></select>
-            <select name="toCurrency" id="toCurrency"></select>
-            <button id="convertBtn">Convert</button>
+<body class="min-h-screen bg-gradient-to-br from-scalate-900 via-slate-800 to-slate-900 text-slate-100 flex items-center justify-center p-4">
+    <div class="w-full max-w-xl">
+       <div class="bg-slate-950/60 background-blur rounded-2xl shadow-2xl p-6 border border-slate-800">
+        <h1 class="text-2xl font-semibold tracking-tinght mb-6 text-center">Currency Converter</h1>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class block text-sm mb-1 for="amount">Amount</label>
+                <input id="amount" type="number" step="0.01" placeholder="Enter amount"
+                class="w-full rounded-xl bg-slate-900 border border-slate-700 px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div class="flex flex-col">
+                <label class="block text-sm mb-1" for="fromCurrency">From</label>
+                <div class="relative">
+                    <select id="fromCurrency"
+                            class="w-full apperance-none rounded-xl bg-slate-900 brder border-slate-700 px-3 py-2 pr-8 outlin-non focus:ring-2 focus:ringindigo-500"></select>
+                    <span class="pointer-events-none absolute right-3 top1/2 -translate-y-1/2 text-slate-400"></span>
+                </div>
+            </div>
         </div>
-        <p id="result"></p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <div class="flex flex-coll">
+                <label class="block text-sm mb-1" for="toCurrency">To</label>
+                <div class="relative">
+                    <select id="toCurrency"
+                            class="w-full apperance-none rounded-xl bg-slate-900 border border-slate-700 px-3 py-3 pr-8 outline-none focus:ring-2 focus:ring-indigo-500"></select>
+                            <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">▾</span>
+                </div>
+            </div>
+            <div class="flex items-end">
+                <button id="converterBtn"
+                class="w-full rounded-xl bg-indigo-600 px-4 py-2 font-medium hover:bg-indigo-500 transition">
+                Convert
+            </button>
+            </div>
+        </div>
+        <div class="space-y-2">
+            <p id="result" class="text-xl font-semibold"></p>
+            <p id="rareInfo" class="text-sm tet-slate-400 mt-4"></p>
+        </div>
+       </div>
+       <p class="text-center text-xs text-slate-400 mt-4">
+        Tip: values update automatically when you change amount or currencies.
+       </p>
     </div>
     <script src="script.js"></script>
 </body>
