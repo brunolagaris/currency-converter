@@ -17,35 +17,34 @@ const currencyFlag = {
   SGD: "🇸🇬", MYR: "🇲🇾", THB: "🇹🇭", PHP: "🇵🇭", RON: "🇷🇴"
 };
 
-const ratesCache = new Map();
+const ratesCache = new Map(); // base -> { date, rates }
 
-// API base (gratuita) para taxas de câmbio
-const API = (base) => `https://api.exchangerate-api.com/v4/latest/${encodeURIComponent(base)}`; 
+// API base (gratuita)
+const API = (base) => `https://api.exchangerate-api.com/v4/latest/${encodeURIComponent(base)}`;
 
-function currencyLabel(code){
-    const flag = currencyFlag[code] || "🏳️";
-    return `${flag} ${code}`;
+function currencyLabel(code) {
+  const flag = currencyFlag[code] || "🏳️";
+  return `${flag} ${code}`;
 }
 
 async function fetchRates(base) {
-    if (ratesCache.has(base)) return ratesCache.get(base);
-    const res = await fetch(API(base));
-
-    if (!res.ok) throw new Error("Failed to fetch rates");
-    const data = await res.json();
-    ratesCache.Cache.set(base, data);
-    return data;
+  if (ratesCache.has(base)) return ratesCache.get(base);
+  const res = await fetch(API(base));
+  if (!res.ok) throw new Error("Failed to fetch rates");
+  const data = await res.json();
+  ratesCache.set(base, data);
+  return data;
 }
 
-async function loadCurrencies(){
-  // Load a know base first to extract the available currency list
+async function loadCurrencies() {
+  // Load a known base first to extract the available currency list
   const data = await fetchRates("USD");
   const currencies = Object.keys(data.rates).sort();
 
-  [fromCurrency, toCurrency].forEach(sel =>{
+  [fromCurrency, toCurrency].forEach(sel => {
     sel.innerHTML = "";
     currencies.forEach(code => {
-      const opt = document.getElement("option");
+      const opt = document.createElement("option");
       opt.value = code;
       opt.textContent = currencyLabel(code);
       sel.appendChild(opt);
@@ -56,22 +55,22 @@ async function loadCurrencies(){
   toCurrency.value = "EUR";
 }
 
-function formatMoney(value, currency){
+function formatMoney(value, currency) {
   try {
-    return new Intl.NumberFormat(undefined, { style: "currency", currency}).format(value);
-  } catch{
-    return `${value.toFixed(2)} $currency`;
+    return new Intl.NumberFormat(undefined, { style: "currency", currency }).format(value);
+  } catch {
+    return `${value.toFixed(2)} ${currency}`;
   }
 }
 
-async function cnvertCurrency(){
+async function convertCurrency() {
   const from = fromCurrency.value;
   const to = toCurrency.value;
   const amountValue = parseFloat(amount.value);
 
-  if (isNaN(amountValue) || amountValue <= 0){
+  if (isNaN(amountValue) || amountValue <= 0) {
     result.textContent = "Enter a valid amount.";
-    rareInfo.textContent = "";
+    rateInfo.textContent = "";
     return;
   }
 
@@ -94,25 +93,25 @@ async function cnvertCurrency(){
   }
 }
 
-  function swapCurrencies(){
-    const from = fromCurrency.value;
-    fromCurrency.value = toCurrency.value;
-    toCurrency.value = from;
-    convertCurrency();
-  }
+function swapCurrencies() {
+  const from = fromCurrency.value;
+  fromCurrency.value = toCurrency.value;
+  toCurrency.value = from;
+  convertCurrency();
+}
 
-  function setupAutoConvert(){
-    //Convert on button click
-    convertBtn.addEventListener("click", convertCurrency);
-    //Auto convert on change
-    [fromCurrency, toCurrency].forEach(sel => sel.addEventListener("change", convertCurrency));
-    amount.addEventListener("input", convertCurrency);
-    swapBtn.addEventListener("click", swapCurrencies);
-  }
+function setupAutoConvert() {
+  // Convert on button click
+  convertBtn.addEventListener("click", convertCurrency);
+  // Auto-convert on change
+  [fromCurrency, toCurrency].forEach(sel => sel.addEventListener("change", convertCurrency));
+  amount.addEventListener("input", convertCurrency);
+  swapBtn.addEventListener("click", swapCurrencies);
+}
 
-  (async function init(){
-    await loadCurrencies();
-    setupAutoConvert();
-    amount.value = "100";
-    convertCurrency();
-  })();
+(async function init() {
+  await loadCurrencies();
+  setupAutoConvert();
+  amount.value = "100";
+  convertCurrency();
+})();
